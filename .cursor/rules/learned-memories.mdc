@@ -1,0 +1,44 @@
+# Project Memory
+
+This file stores project-specific knowledge, conventions, and user preferences learned by the AI assistant.
+
+## User Preferences
+
+- **Portfolio Type:** Personal portfolio for junior web developer
+- **Design Style:** Modern and minimalist, similar to Apple iOS latest design
+- **Target Audience:** Hiring managers and potential employers
+- **Budget:** Prefer free/open-source solutions where possible
+- **Deployment:** Serverless hosting with free tier options
+
+## Technical Decisions
+
+- **Framework Migration:** Migrate from React + Vite to Next.js for better SEO and performance
+- **CSS Framework:** Continue using Tailwind CSS for styling
+- **Content Management:** Implement headless CMS for easy content updates
+- **Deployment:** Use serverless hosting (Vercel/Netlify) with free tier
+- **Containerization:** Use Docker for consistent deployment
+- **CI/CD:** GitHub Actions for automatic deployment on git changes
+- **Design Tools:** Use Figma or AI tools for modern design
+
+## Project Conventions
+
+- **Code Quality:** Maintain clean, maintainable code structure
+- **Performance:** Optimize for fast loading and good Core Web Vitals
+- **SEO:** Implement proper meta tags, structured data, and semantic HTML
+- **Accessibility:** Follow WCAG guidelines for inclusive design
+- **Mobile-First:** Responsive design with mobile-first approach
+- **Version Control:** Use Git with meaningful commit messages
+
+## Current State
+
+- **Existing Project:** React + Vite + Firebase portfolio
+- **Current Tech Stack:** React 18, TypeScript, Tailwind CSS, Framer Motion
+- **Current Features:** Multiple pages (Home, About, Projects, Resume, DSA)
+- **Current Assets:** Custom fonts, icons, images, and PDF resume
+
+## CMS Research
+
+### Strapi vs Payload Analysis
+- **Strapi:** Open-source, self-hosted, extensive plugin ecosystem
+- **Payload:** TypeScript-first, self-hosted, excellent developer experience
+- **Decision Pending:** Need to evaluate hosting costs, ease of setup, and Next.js integration

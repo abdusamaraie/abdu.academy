@@ -1,0 +1,106 @@
+---
+description: Guidance for using the Playwright MCP server to automate browsers and validate UIs
+globs:
+alwaysApply: false
+---
+# Playwright MCP Agent Rule
+
+This rule defines how to operate the Playwright MCP server for reliable browser automation, UI validation, and end‑to‑end test assistance within this project.
+
+## Core Principles
+
+- Use deterministic selectors first (role, name, label, testid) before CSS/XPath.
+- Prefer user-centric queries: `getByRole`, `getByLabel`, `getByText` with exactness.
+- Make actions robust with waiting strategies (`await expect(...).toBeVisible()`).
+- Keep scenarios atomic and repeatable; avoid coupling between tests.
+- Record artifacts (screenshots, traces) when failures occur.
+
+## Standard Workflow
+
+1. Launch context with explicit device/viewport and locale.
+2. Navigate and wait for network idle or the primary UI landmark.
+3. Interact using accessible roles and assert visible results.
+4. Capture diagnostics (screenshot/trace) on failure.
+5. Clean up contexts to avoid cross‑test leakage.
+
+## MCP Tooling Conventions
+
+When interacting through the Playwright MCP server, follow this sequence:
+
+1. Create a browser and context with options (headless, viewport, locale, storageState).
+2. Open a new page; navigate to the target URL.
+3. Use role-based locators to interact; avoid brittle selectors.
+4. Add explicit assertions after each critical action.
+5. Close pages/contexts when done.
+
+## Selector Strategy
+
+Priority order:
+1. Role + name: `getByRole('button', { name: 'Submit' })`
+2. Label association: `getByLabel('Email')`
+3. Test id: `getByTestId('cart-count')`
+4. Text: `getByText('Welcome')`
+5. CSS only when necessary; never XPath unless unavoidable.
+
+## Recommended Assertions
+
+- Visibility: `await expect(locator).toBeVisible()`
+- Enabled/disabled: `await expect(locator).toBeEnabled()`
+- URL/state: `await expect(page).toHaveURL(/dashboard/)`
+- Attribute/text: `await expect(locator).toHaveText('Saved')`
+
+## Example Session
+
+```ts
+// Pseudocode outline for MCP-driven flow
+const browser = await playwright.launch({ headless: true })
+const context = await browser.newContext({ viewport: { width: 1280, height: 800 } })
+const page = await context.newPage()
+
+await page.goto('https://example.com')
+await expect(page.getByRole('heading', { name: 'Welcome' })).toBeVisible()
+
+await page.getByLabel('Email').fill('user@example.com')
+await page.getByLabel('Password').fill('super-secret')
+await page.getByRole('button', { name: 'Sign in' }).click()
+
+await expect(page).toHaveURL(/dashboard/)
+await page.screenshot({ path: 'artifacts/dashboard.png', fullPage: true })
+
+await context.close()
+await browser.close()
+```
+
+## Diagnostics & Artifacts
+
+- Enable tracing on failure: `context.tracing.start({ screenshots: true, snapshots: true })`
+- Save trace: `await context.tracing.stop({ path: 'artifacts/trace.zip' })`
+- Use `page.pause()` only during debugging sessions.
+
+## Error Handling
+
+- Wrap critical flows with retries when appropriate, but investigate flakiness.
+- Prefer `expect` waits over arbitrary `waitForTimeout`.
+- Fail fast on navigation or locator timeouts; surface meaningful messages.
+
+## CI Recommendations
+
+- Run in headless mode with stable viewport.
+- Serialize artifacts under `artifacts/` per run.
+- Shard tests by file and cache dependencies.
+- Use `--trace=on-first-retry` for efficient diagnostics.
+
+## Security & Stability
+
+- Never embed secrets in code or URLs; use env vars and storage state.
+- Clear storage between tests unless a persisted session is intended and documented.
+- Avoid network flakiness by stubbing external calls when validation does not require them.
+
+## Response Structure (when assisting users)
+
+1. Scenario summary and goals
+2. Step-by-step actions with selectors
+3. Assertions to verify success
+4. Artifacts to capture on failure
+5. Cleanup steps
+
